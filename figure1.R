@@ -3,6 +3,7 @@ library(tidyverse)
 library(ggplot2)
 library(readr)
 library(readxl)
+library(writexl)
 library(dplyr)
 
 # data (preprocessing in quality_label_preprocessing.R)
@@ -14,6 +15,7 @@ sort(table(data$variables_clean))
 
 ######################################################
 # methods and outcome measures
+
 
 ### split up the outcome measures in separate rows
 
@@ -46,7 +48,6 @@ data_final <- data_final%>%
                                    grepl('algo',outcome_rich) ~ "algorithm",
                                    TRUE ~ "other"))
 #TRUE ~ outcome_rich))
-
 
 par(mar = c(4, 4, .1, .1))
 
@@ -86,7 +87,7 @@ ggplot(outcomes_simple, aes(x = reorder(outcome_clean, n), y = n)) +
 
 # N=selected papers, streamlined categories
 outcomes_rich <- data_final %>%
-  filter(outcome_clean=="network/echo chamber") %>%
+  filter(outcome_clean=="expression") %>%
   mutate(outcome_rich = str_trim(as.character(outcome_rich))) %>%
   dplyr::count(outcome_rich) %>%
   na.omit() %>%

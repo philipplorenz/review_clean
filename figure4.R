@@ -21,7 +21,7 @@ data_effect <- data_effect %>%
 
 countries <- data_effect%>%
   mutate(country = ifelse(country == "United States", "USA",country))%>%
-  filter(outcome_clean == "trust" | outcome_clean == "knowledge" | outcome_clean == "exposure" | outcome_clean == "participation") %>%
+  filter(outcome_clean == "trust" | outcome_clean == "knowledge" | outcome_clean == "exposure" | outcome_clean == "participation" | outcome_clean == "expression") %>%
   complete(country, effect, fill = list(z = 0)) %>% 
   dplyr::group_by(country, effect) %>% 
   dplyr::summarise(n = sum(z)) %>%
@@ -92,7 +92,7 @@ data_effect <- data_effect %>%
 
 countries <- data_effect%>%
   mutate(country = ifelse(country == "United States", "USA",country))%>%
-  filter(outcome_clean == "polarization" | outcome_clean == "populism" | outcome_clean == "network/echo chamber" | outcome_clean == "hate")%>%
+  filter(outcome_clean == "polarization" | outcome_clean == "populism" | outcome_clean == "network/echo chamber" | outcome_clean == "hate" | outcome_clean == "misinformation")%>%
   complete(country, effect, fill = list(z = 0)) %>% 
   dplyr::group_by(country, effect) %>% 
   dplyr::summarise(n = sum(z)) %>%
@@ -155,7 +155,7 @@ data_heterogeneity <- data_effect
 par(mar = c(4, 4, .1, .1))
 
 outcomes <- data_heterogeneity %>%
-  filter(outcome_clean == "polarization" | outcome_clean == "populism" | outcome_clean == "network/echo chamber" | outcome_clean == "hate")%>%
+  filter(outcome_clean == "polarization" | outcome_clean == "populism" | outcome_clean == "network/echo chamber" | outcome_clean == "hate" | outcome_clean == "misinformation")%>%
   #filter(outcome_clean == "participation" | outcome_clean == "knowledge" | outcome_clean == "exposure" | outcome_clean == "trust")%>%
   dplyr::count(heterogeneity)%>%
   arrange(desc(n))%>%
@@ -183,7 +183,7 @@ par(mar = c(4, 4, .1, .1))
 
 outcomes <- data_heterogeneity %>%
   #filter(outcome_clean == "polarization" | outcome_clean == "populism" | outcome_clean == "network/echo chamber" | outcome_clean == "hate")%>%
-  filter(outcome_clean == "participation" | outcome_clean == "knowledge" | outcome_clean == "exposure" | outcome_clean == "trust")%>%
+  filter(outcome_clean == "participation" | outcome_clean == "knowledge" | outcome_clean == "exposure" | outcome_clean == "trust" | outcome_clean == "expression")%>%
   dplyr::count(heterogeneity)%>%
   arrange(desc(n))%>%
   na.omit()%>%
