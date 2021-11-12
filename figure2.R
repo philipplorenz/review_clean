@@ -4,14 +4,15 @@ library(tidyverse)
 library(ggplot2)
 library(readr)
 library(dplyr)
+library(readxl)
 
-data_effect<- read_excel("Data_effects_complete.xlsx") 
+data_effect<- read_excel("Data_effects_complete.xlsx")  
 
 ######################################################################
 # effect distribution, change outcome for different plots
 
 data_trust<- data_effect %>%
-  filter(outcome_clean == "misinformation")
+  filter(outcome_clean == "hate")
 
 gg_b <- ggplot_build(
   ggplot() + geom_histogram(aes(x = data_trust$effect), binwidth=1., stat="count")
@@ -19,7 +20,7 @@ gg_b <- ggplot_build(
 
 nu_bins <- dim(gg_b$data[[1]])[1]
 
-p <- ggplot() + geom_histogram(aes(x = data_trust$effect), binwidth=1.,  fill = c("#7EAB55", "grey", "#EE847D"), stat="count") + 
+p <- ggplot() + geom_histogram(aes(x = data_trust$effect), binwidth=1.,  fill = c("#66c2a5", "grey", "#fc8d62"), stat="count") + 
   theme_minimal() + 
   geom_bar(stat='identity', color="black") +
   theme(axis.text.x = element_text(size = 20),
@@ -49,7 +50,7 @@ trust_effects <- trust_effects %>%
 p <- ggplot(trust_effects, aes(fill=effect, y=n, x=method_clean)) + 
   geom_bar(position='stack', stat='identity', color="black") +
   theme_minimal()+
-  scale_fill_manual(values = c("#EE847D", "grey", "#7EAB55")) +
+  scale_fill_manual(values = c("#fc8d62", "grey", "#66c2a5")) +
   scale_x_discrete('Method', limits=c("descriptive", "experiment", "network", "panel", "qualitative", "social_media", "social_media_combined", "survey", "survey_combined", "tracking"), drop=FALSE) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 15),
         axis.text.y = element_text(size = 15),
@@ -61,8 +62,8 @@ p
 # distrubution over years
 
 data_trust<- data_effect %>%
-  #filter(outcome_clean == "trust" | outcome_clean == "knowledge" | outcome_clean == "exposure" | outcome_clean == "participation")
-  filter(outcome_clean == "polarization" | outcome_clean == "populism" | outcome_clean == "network/echo chamber" | outcome_clean == "hate")
+  filter(outcome_clean == "trust" | outcome_clean == "knowledge" | outcome_clean == "exposure" | outcome_clean == "participation" | outcome_clean == "expressionn")
+  #filter(outcome_clean == "polarization" | outcome_clean == "populism" | outcome_clean == "network/echo chamber" | outcome_clean == "hate" | outcome_clean == "misinformation")
 
 trust_effects <- data_trust %>%
   dplyr::count(effect, Year) %>%
@@ -75,8 +76,8 @@ trust_effects <- trust_effects %>%
 p <- ggplot(trust_effects, aes(fill=effect, y=n, x=Year)) + 
   geom_bar(position='stack', stat='identity', color="black") +
   theme_minimal()+
-  scale_fill_manual(values = c("#7EAB55", "grey", "#EE847D")) +
-  #scale_fill_manual(values = c("#EE847D", "grey", "#7EAB55")) +
+  #scale_fill_manual(values = c("#66c2a5", "grey", "#fc8d62")) +
+  scale_fill_manual(values = c("#fc8d62", "grey", "#66c2a5")) +
   #scale_x_discrete('Year', limits=c("2005", "2006","2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2006", "2006", "20", "2019", "2020", "2021"), drop=FALSE) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 15),
         axis.text.y = element_text(size = 15),
@@ -87,32 +88,42 @@ p
 ######################################################################
 # distribution over authors
 
+data_effect<- read_excel("Data_effects_complete.xlsx") 
+
 data_trust<- data_effect %>%
-  filter(outcome_clean == "trust" | outcome_clean == "knowledge" | outcome_clean == "exposure" | outcome_clean == "participation") %>%
-  #filter(outcome_clean == "polarization" | outcome_clean == "populism" | outcome_clean == "network/echo chamber" | outcome_clean == "hate") %>%
+  filter(outcome_clean == "trust" | outcome_clean == "knowledge" | outcome_clean == "exposure" | outcome_clean == "participation" | outcome_clean == "expression") %>%
+  #filter(outcome_clean == "polarization" | outcome_clean == "populism" | outcome_clean == "network/echo chamber" | outcome_clean == "hate" | outcome_clean == "misinformation") %>%
   mutate(Author = strsplit(as.character(Author), ";")) %>% 
   unnest(Author) %>%
   mutate(Author = str_trim(as.character(Author)))
 
+counts_author <- data_trust %>%
+  count(Author) %>%
+  na.omit()%>%
+  arrange(desc(n)) %>%
+  head(30)
+
 trust_effects <- data_trust %>%
-  dplyr::count(effect, Author) %>%
+  count(effect, Author) %>%
   na.omit()%>%
   arrange(desc(n)) 
 
-table(trust_effects)
+trust_effects <- trust_effects %>%
+  right_join(counts_author, by = "Author") %>%
+  na.omit()
 
-trust_effects$Author <- reorder(trust_effects$Author, trust_effects$n, sum)
+table(trust_effects)
 
 
 trust_effects <- trust_effects %>%
   mutate(effect = case_when(effect == 1 ~ "positive", effect == -1 ~ "negative", effect == 0 ~ "no change"))
 
-p <- ggplot(trust_effects, aes(fill=effect, y=n, x=reorder(Author,n, sum))) + 
+p <- ggplot(trust_effects, aes(fill=effect, y=n.x, x=reorder(Author,n.x, sum))) + 
   geom_bar(position='stack', stat='identity', color="black") +
   theme_minimal()+
   #xlim(100, 120) +
-  #scale_fill_manual(values = c("#7EAB55", "grey", "#EE847D")) +
-  scale_fill_manual(values = c("#EE847D", "grey", "#7EAB55")) +
+  #scale_fill_manual(values = c("#66c2a5", "grey", "#fc8d62")) +
+  scale_fill_manual(values = c("#fc8d62", "grey", "#66c2a5")) +
   #scale_x_discrete('Year', limits=c("2005", "2006","2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2006", "2006", "20", "2019", "2020", "2021"), drop=FALSE) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 15),
         axis.text.y = element_text(size = 15),

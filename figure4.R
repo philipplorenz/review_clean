@@ -55,7 +55,7 @@ my_plot_fun <- function(data){
   ggplot(data, aes(x="", y=n, fill=effect)) +
     geom_bar(alpha=0.8, position='stack', stat='identity') +
     theme_void()+
-    scale_fill_manual("effect", values=c("#EE847D", "grey", "#7EAB55"), limits=c("decrease", "no change", "increase")) +
+    scale_fill_manual("effect", values=c("#fc8d62", "grey", "#66c2a5"), limits=c("decrease", "no change", "increase")) +
     coord_polar("y", start=0) +
     theme(legend.position="none")
 }
@@ -125,7 +125,7 @@ my_plot_fun <- function(data){
   ggplot(data, aes(x="", y=n, fill=effect)) +
     geom_bar(alpha=0.8, position='stack', stat='identity') +
     theme_void()+
-    scale_fill_manual("effect", values=c("#7EAB55", "grey", "#EE847D"), limits=c("decrease", "no change", "increase")) +
+    scale_fill_manual("effect", values=c("#66c2a5", "grey", "#fc8d62"), limits=c("decrease", "no change", "increase")) +
     coord_polar("y", start=0) +
     theme(legend.position="none")
 }
@@ -152,11 +152,16 @@ data_effect<- read_excel("Data_effects_complete.xlsx")
 
 data_heterogeneity <- data_effect
 
+data_effect <- data_effect  %>% 
+  mutate(heterogeneity = strsplit(as.character(heterogeneity), ",")) %>% 
+  unnest(heterogeneity) %>%
+  mutate(heterogeneity = str_trim(as.character(heterogeneity)))
+
 par(mar = c(4, 4, .1, .1))
 
 outcomes <- data_heterogeneity %>%
   filter(outcome_clean == "polarization" | outcome_clean == "populism" | outcome_clean == "network/echo chamber" | outcome_clean == "hate" | outcome_clean == "misinformation")%>%
-  #filter(outcome_clean == "participation" | outcome_clean == "knowledge" | outcome_clean == "exposure" | outcome_clean == "trust")%>%
+  #filter(outcome_clean == "participation" | outcome_clean == "knowledge" | outcome_clean == "exposure" | outcome_clean == "trust" | outcome_clean == "expression")%>%
   dplyr::count(heterogeneity)%>%
   arrange(desc(n))%>%
   na.omit()%>%
@@ -182,8 +187,8 @@ data_heterogeneity <- data_effect
 par(mar = c(4, 4, .1, .1))
 
 outcomes <- data_heterogeneity %>%
-  #filter(outcome_clean == "polarization" | outcome_clean == "populism" | outcome_clean == "network/echo chamber" | outcome_clean == "hate")%>%
-  filter(outcome_clean == "participation" | outcome_clean == "knowledge" | outcome_clean == "exposure" | outcome_clean == "trust" | outcome_clean == "expression")%>%
+  filter(outcome_clean == "polarization" | outcome_clean == "populism" | outcome_clean == "network/echo chamber" | outcome_clean == "hate")%>%
+  #filter(outcome_clean == "participation" | outcome_clean == "knowledge" | outcome_clean == "exposure" | outcome_clean == "trust" | outcome_clean == "expression")%>%
   dplyr::count(heterogeneity)%>%
   arrange(desc(n))%>%
   na.omit()%>%
@@ -215,8 +220,8 @@ data_trust <- data_trust %>%
 # N=selected papers, streamlined categories
 trust_effects <- data_trust %>%
   mutate(country = ifelse(country == "United States", "USA",country))%>%
-  filter(outcome_clean == "trust" | outcome_clean == "knowledge" | outcome_clean == "exposure" | outcome_clean == "participation")%>%
-  #filter(outcome_clean == "polarization" | outcome_clean == "populism" | outcome_clean == "network/echo chamber" | outcome_clean == "hate")%>%
+  #filter(outcome_clean == "trust" | outcome_clean == "knowledge" | outcome_clean == "exposure" | outcome_clean == "participation" | outcome_clean == "expression")%>%
+  filter(outcome_clean == "polarization" | outcome_clean == "populism" | outcome_clean == "network/echo chamber" | outcome_clean == "hate" | outcome_clean == "misinformation")%>%
   dplyr::count(effect, country) %>%
   na.omit()%>%
   arrange(desc(n))
@@ -229,9 +234,10 @@ p <- ggplot(trust_effects, aes(fill=effect, y=n, x=country)) +
   geom_bar(position='stack', stat='identity') +
   theme_minimal()+
   coord_flip()+
-  scale_fill_manual(values = c("#EE847D", "grey", "#7EAB55")) +
+  scale_fill_manual(values = c("#66c2a5", "grey", "#fc8d62")) +
+  #scale_fill_manual(values = c("#fc8d62", "grey", "#66c2a5")) +
   #scale_x_discrete('Country', limits=c("Sweden", "Finland", "Germany", "Netherlands", "Belgium", "France", "UK", "Spain", "Italy", "Europe", "Austria", "South Korea", "Japan", "USA", "Israel", "Brazil", "Poland", "Hungary", "Macedonia", "Kenya", "Malaysia", "Jordan", "Ethiopia", "Russia", "Korea"), drop=FALSE) +
-  scale_x_discrete('Country', limits=c("Denmark", "Norway", "Sweden", "Switzerland", "Finland", "Germany", "Belgium",  "France", "Netherlands", "Spain", "Italy", "Europe", "Australia", "Austria", "Chile", "Canada", "Japan", "USA", "Israel", "South Korea", "Taiwan", "Croatia", "Ghana", "Brazil", "Poland", "Hungary", "Ecuador", "Colombia", "Indonesia", "Macedonia", "Mexico", "Nigeria", "India", "Lebanon", "Philippines", "Kenya", "Malaysia", "Jordan", "Pakistan", "Hong Kong", "Ethiopia", "North Africa", "Iran", "Middle East", "Kazakhstan", "Egypt", "Turkey", "Russia", "China"), drop=FALSE) +
+  scale_x_discrete('Country', limits=rev(c("Denmark", "Norway", "Sweden", "Switzerland", "Finland", "Germany", "Belgium",  "France", "Netherlands", "Spain", "Italy", "Europe", "Australia", "Austria", "Chile", "Canada", "Japan", "USA", "Israel", "South Korea", "Taiwan", "Croatia", "Ghana", "Brazil", "Poland", "Hungary", "Ecuador", "Colombia", "Indonesia", "Macedonia", "Mexico", "Nigeria", "India", "Lebanon", "Philippines", "Kenya", "Malaysia", "Jordan", "Pakistan", "Hong Kong", "Ethiopia", "North Africa", "Iran", "Middle East", "Kazakhstan", "Egypt", "Turkey", "Russia", "China")), drop=FALSE) +
   theme(axis.text.x = element_text(hjust = 1, size = 10),
         axis.text.y = element_text(size = 10),
         axis.title.y = element_text(size = 20),
@@ -254,8 +260,8 @@ data_trust <- data_trust %>%
 # N=selected papers, streamlined categories
 trust_effects <- data_trust %>%
   mutate(country = ifelse(country == "United States", "USA",country))%>%
-  #filter(outcome_clean == "trust" | outcome_clean == "knowledge" | outcome_clean == "exposure" | outcome_clean == "participation")%>%
-  filter(outcome_clean == "polarization" | outcome_clean == "populism" | outcome_clean == "network/echo chamber" | outcome_clean == "hate")%>%
+  filter(outcome_clean == "trust" | outcome_clean == "knowledge" | outcome_clean == "exposure" | outcome_clean == "participation")%>%
+  #filter(outcome_clean == "polarization" | outcome_clean == "populism" | outcome_clean == "network/echo chamber" | outcome_clean == "hate")%>%
   dplyr::count(effect, country) %>%
   na.omit()%>%
   arrange(desc(n))
