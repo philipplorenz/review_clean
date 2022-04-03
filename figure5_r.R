@@ -75,7 +75,7 @@ p + subgrobs
 
 #####################################################################
 
-data_effect<- read_excel("Data_effects_complete.xlsx")
+data_effect<- read_excel("data_effects.xlsx")
 
 data_effect <- data_effect  %>% 
   mutate(country = strsplit(as.character(country), ",")) %>% 
@@ -172,7 +172,7 @@ ggplot(outcomes, aes(x = reorder(heterogeneity, n), y = n)) +
 
 #####################################################################################
 
-data_effect<- read_excel("Data_effects_complete.xlsx")
+data_effect<- read_excel("data_effects.xlsx")
 
 data_heterogeneity <- data_effect
 
@@ -199,7 +199,7 @@ ggplot(outcomes, aes(x = reorder(heterogeneity, n), y = n)) +
 
 #####################################################################################
 
-data_effect<- read_excel("Data_effects_complete.xlsx")
+data_effect<- read_excel("data_effects.xlsx")
 
 data_trust<- data_effect
 
@@ -226,19 +226,18 @@ p <- ggplot(trust_effects, aes(fill=effect, y=n, x=country)) +
   geom_bar(position='stack', stat='identity') +
   theme_minimal()+
   coord_flip()+
-  scale_fill_manual(values = c("#EE847D", "grey", "#7EAB55")) +
-  #scale_x_discrete('Country', limits=c("Sweden", "Finland", "Germany", "Netherlands", "Belgium", "France", "UK", "Spain", "Italy", "Europe", "Austria", "South Korea", "Japan", "USA", "Israel", "Brazil", "Poland", "Hungary", "Macedonia", "Kenya", "Malaysia", "Jordan", "Ethiopia", "Russia", "Korea"), drop=FALSE) +
-  scale_x_discrete('Country', limits=c("Denmark", "Norway", "Sweden", "Switzerland", "Finland", "Germany", "Belgium",  "France", "Netherlands", "Spain", "Italy", "Europe", "Australia", "Austria", "Chile", "Canada", "Japan", "USA", "Israel", "South Korea", "Taiwan", "Croatia", "Ghana", "Brazil", "Poland", "Hungary", "Ecuador", "Colombia", "Indonesia", "Macedonia", "Mexico", "Nigeria", "India", "Lebanon", "Philippines", "Kenya", "Malaysia", "Jordan", "Pakistan", "Hong Kong", "Ethiopia", "North Africa", "Iran", "Middle East", "Kazakhstan", "Egypt", "Turkey", "Russia", "China"), drop=FALSE) +
+  scale_fill_manual(values = c("#ED936B", "grey", "#7DBFA7")) +
+  scale_x_discrete('Country', limits=rev(c("Denmark", "Norway", "Sweden", "Switzerland", "Finland", "Germany", "Belgium",  "France", "Netherlands", "UK", "Spain", "Italy", "Europe", "Australia", "Austria", "Chile", "Canada", "Japan", "USA", "Israel", "South Korea", "Taiwan", "Croatia", "Ghana", "Brazil", "Poland", "Hungary", "Ecuador", "Colombia", "Indonesia", "Macedonia", "Mexico", "Nigeria", "India", "Lebanon", "Philippines", "Kenya", "Malaysia", "Jordan", "Pakistan", "Hong Kong", "Ethiopia", "North Africa", "Iran", "Middle East", "Kazakhstan", "Egypt", "Turkey", "Russia", "China")), drop=FALSE) +
   theme(axis.text.x = element_text(hjust = 1, size = 10),
         axis.text.y = element_text(size = 10),
         axis.title.y = element_text(size = 20),
-        axis.title.x = element_text(size = 20))
+        axis.title.x = element_text(size = 20)) 
 p
 
 
 ################################################################
 
-data_effect<- read_excel("Data_effects_complete.xlsx")
+data_effect<- read_excel("data_effects.xlsx")
 
 data_trust<- data_effect
 
@@ -265,9 +264,8 @@ p <- ggplot(trust_effects, aes(fill=effect, y=n, x=country)) +
   geom_bar(position='stack', stat='identity') +
   theme_minimal()+
   coord_flip()+
-  scale_fill_manual(values = c("#7EAB55","grey" ,"#EE847D")) +
-  #scale_x_discrete('Country', limits=c("Sweden", "Finland", "Germany", "Netherlands", "Belgium", "France", "UK", "Spain", "Italy", "Europe", "Austria", "South Korea", "Japan", "USA", "Israel", "Brazil", "Poland", "Hungary", "Macedonia", "Kenya", "Malaysia", "Jordan", "Ethiopia", "Russia", "Korea"), drop=FALSE) +
-  scale_x_discrete('Country', limits=c("Denmark", "Norway", "Sweden", "Switzerland", "Finland", "Germany", "Belgium",  "France", "Netherlands", "Spain", "Italy", "Europe", "Australia", "Austria", "Chile", "Canada", "Japan", "USA", "Israel", "South Korea", "Taiwan", "Croatia", "Ghana", "Brazil", "Poland", "Hungary", "Ecuador", "Colombia", "Indonesia", "Macedonia", "Mexico", "Nigeria", "India", "Lebanon", "Philippines", "Kenya", "Malaysia", "Jordan", "Pakistan", "Hong Kong", "Ethiopia", "North Africa", "Iran", "Middle East", "Kazakhstan", "Egypt", "Turkey", "Russia", "China"), drop=FALSE) +
+  scale_fill_manual(values = c("#7DBFA7", "grey", "#ED936B")) +
+  scale_x_discrete('Country', limits=rev(c("Denmark", "Norway", "Sweden", "Switzerland", "Finland", "Germany", "Belgium",  "France", "Netherlands", "UK", "Spain", "Italy", "Europe", "Australia", "Austria", "Chile", "Canada", "Japan", "USA", "Israel", "South Korea", "Taiwan", "Croatia", "Ghana", "Brazil", "Poland", "Hungary", "Ecuador", "Colombia", "Indonesia", "Macedonia", "Mexico", "Nigeria", "India", "Lebanon", "Philippines", "Kenya", "Malaysia", "Jordan", "Pakistan", "Hong Kong", "Ethiopia", "North Africa", "Iran", "Middle East", "Kazakhstan", "Egypt", "Turkey", "Russia", "China")), drop=FALSE) +
   theme(axis.text.x = element_text(hjust = 1, size = 10),
         axis.text.y = element_text(size = 10),
         axis.title.y = element_text(size = 20),
